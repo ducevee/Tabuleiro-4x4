@@ -1,13 +1,15 @@
 import random
 import time
 
-def apresenta_tabuleiro(tabuleiro):
-    print("Tabuleiro:")
+def mostra_tabuleiro(tabuleiro):
+    # Itera sobre cada linha do tabuleiro
     for linha in tabuleiro:
-        print(" ".join(linha))
+        # Divide visualmente cada casa do tabuleiro
+        print(" | ".join(linha))
+        print("-" * 14)
     print()
 
-def obter_jogada():
+def coordenadas():
     linha = int(input("Digite o número da linha (1 a 4): ")) - 1
     coluna = int(input("Digite o número da coluna (1 a 4): ")) - 1
     return linha, coluna
@@ -160,14 +162,14 @@ def jogar():
     jogada = 1  # Número da jogada
 
     while True:
-        apresenta_tabuleiro(tabuleiro)
+        mostra_tabuleiro(tabuleiro)
         print("Jogada", jogada)  # Número da jogada
         print("Vez do jogador", jogador_atual)
 
         start_time = time.time()  # Tempo inicial da jogada
 
         if jogador_atual == "X" or (jogador_atual == "O" and modo == "1"):
-            linha, coluna = obter_jogada()
+            linha, coluna = coordenadas()
             jogada_valida = realizar_jogada(tabuleiro, jogador_atual, linha, coluna)
         else:
             if estrategia == "1":
@@ -193,7 +195,7 @@ def jogar():
 
         ganhador = verificar_ganhador(tabuleiro)
         if ganhador:
-            apresenta_tabuleiro(tabuleiro)
+            mostra_tabuleiro(tabuleiro)
             print("O jogador", ganhador, "venceu!")
             break
 
