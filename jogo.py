@@ -14,14 +14,15 @@ def coordenadas():
     coluna = int(input("Digite o número da coluna (1 a 4): ")) - 1
     return linha, coluna
 
-def realizar_jogada(tabuleiro, jogador, linha, coluna):
+def realiza_jogada(tabuleiro, jogador, linha, coluna):
     if tabuleiro[linha][coluna] == "-":
         tabuleiro[linha][coluna] = jogador
         return True
     else:
         return False
 
-def verificar_ganhador(tabuleiro):
+def verifica_ganhador(tabuleiro):
+    
     # Verificar linhas
     for linha in tabuleiro:
         if linha[0] == linha[1] == linha[2] == linha[3] != "-":
@@ -41,15 +42,16 @@ def verificar_ganhador(tabuleiro):
     return None
 
 def jogada_aleatoria(tabuleiro):
-    jogadas_disponiveis = []
-    for i in range(4):
+    jogadas_disponiveis = [] # cria uma lista para as possiveis jogadas
+    for i in range(4): 
         for j in range(4):
             if tabuleiro[i][j] == "-":
-                jogadas_disponiveis.append((i, j))
-    return random.choice(jogadas_disponiveis)
+                jogadas_disponiveis.append((i, j)) # adiciona as jogadas disponiveis na lista
+    return random.choice(jogadas_disponiveis) # retorna uma jogada aleatoria disponivel da lista
 
-def minimax(tabuleiro, jogador, profundidade, max_jogador):
-    ganhador = verificar_ganhador(tabuleiro)
+def minimax(tabuleiro, jogador, profundidade, max_jogador): # ALGORITMO MINIMAX
+    ganhador = verifica_ganhador(tabuleiro)
+    # avaliação heruística para determinar qual a melhor jogada
     if ganhador:
         if ganhador == max_jogador:
             return 1
@@ -95,7 +97,7 @@ def jogada_minimax(tabuleiro, jogador):
 
 def jogada_alphabeta(tabuleiro, jogador):
     def alphabeta(tabuleiro, jogador, profundidade, alpha, beta, max_jogador):
-        ganhador = verificar_ganhador(tabuleiro)
+        ganhador = verifica_ganhador(tabuleiro)
         if ganhador:
             if ganhador == max_jogador:
                 return 1
@@ -148,29 +150,43 @@ def jogada_alphabeta(tabuleiro, jogador):
 def jogar():
     tabuleiro = [["-" for _ in range(4)] for _ in range(4)]
     jogadores = ["X", "O"]
-    modo = input("Escolha o modo de jogo (1 - Jogador vs. Jogador, 2 - Jogador vs. Computador): ")
-
+    print('-' * 30)
+    print("Bem-vindo ao jogo da velha 4x4!")
+    print('-' * 30)
+    print()
+    time.sleep(1)
+    print('Modos de jogo:')
+    print()
+    modo = input("1- Jogador vs Jogador\n2 - Jogador vs Computador\nEscolha o modo de jogo:")
     if modo == "1":
         jogador_atual = jogadores[0]
     elif modo == "2":
-        estrategia = input("Escolha a estratégia do Computador (1 - Aleatória, 2 - Minimax, 3 - Minimax com Alfa-beta): ")
+        print()
+        print('Boa escolha...')
+        print()
+        estrategia = input("Estratégias Disponíveis para o racíocinio do Computador:\n1 - Aleatória\n2 - Minimax\n3 - Minimax com Alfa-beta\nEscolha a estratégia do Computador: ")
         jogador_atual = random.choice(jogadores)
     else:
         print("Modo inválido. Encerrando o jogo.")
         return
-
+    print()
     jogada = 1  # Número da jogada
 
     while True:
+        print('Estado atual do tabuleiro:')
+        print()
         mostra_tabuleiro(tabuleiro)
-        print("Jogada", jogada)  # Número da jogada
-        print("Vez do jogador", jogador_atual)
-
+        print('-' * 14)
+        print(jogada, "ª rodada")  # Número da jogada
+        print("Vez do jogador: ", jogador_atual)
+        print()
+        time.sleep(1)
+        print()
         start_time = time.time()  # Tempo inicial da jogada
 
         if jogador_atual == "X" or (jogador_atual == "O" and modo == "1"):
             linha, coluna = coordenadas()
-            jogada_valida = realizar_jogada(tabuleiro, jogador_atual, linha, coluna)
+            jogada_valida = realiza_jogada(tabuleiro, jogador_atual, linha, coluna)
         else:
             if estrategia == "1":
                 linha, coluna = jogada_aleatoria(tabuleiro)
@@ -182,18 +198,24 @@ def jogar():
                 print("Estratégia inválida. Encerrando o jogo.")
                 return
 
-            jogada_valida = realizar_jogada(tabuleiro, jogador_atual, linha, coluna)
+            jogada_valida = realiza_jogada(tabuleiro, jogador_atual, linha, coluna)
 
         end_time = time.time()  # Tempo final da jogada
 
-        tempo_jogada = end_time - start_time
-        print("Tempo da jogada:", tempo_jogada)
-
+        print()
+        tempo_rodada = end_time - start_time
+        print("Tempo da rodada: ", tempo_rodada)
+        print()
+        print('-' * 14)
         if not jogada_valida:
+            print('!' * 14)
+            print()
             print("Jogada inválida. Tente novamente.")
+            print()
+            print('!' * 14)
             continue
 
-        ganhador = verificar_ganhador(tabuleiro)
+        ganhador = verifica_ganhador(tabuleiro)
         if ganhador:
             mostra_tabuleiro(tabuleiro)
             print("O jogador", ganhador, "venceu!")
